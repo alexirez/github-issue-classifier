@@ -1,0 +1,26 @@
+# Games / engines
+godotengine/godot
+# ML / data
+pytorch/pytorch
+tensorflow/tensorflow
+scikit-learn/scikit-learn
+numpy/numpy
+pandas-dev/pandas
+huggingface/transformers
+# Web / frontend
+facebook/react
+vuejs/core
+microsoft/vscode
+electron/electron
+# Languages / tooling
+rust-lang/rust
+rust-lang/cargo
+denoland/deno
+neovim/neovim
+psf/requests
+# Infra / apps
+kubernetes/kubernetes
+hashicorp/terraform
+grafana/grafana
+home-assistant/core
+flutter/flutter
