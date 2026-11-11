@@ -15,7 +15,8 @@ MAX_PER_REPO = 600          # cap per repo so no single project dominates
 OUT_DIR = Path("data/raw")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-skipped_run = []
+skipped_run = []            # consecutive skipped repos, printed on one line
+
 
 def flush_skipped():
     if skipped_run:
@@ -42,6 +43,7 @@ def format_duration(seconds):
         parts.append(unit(ms, "millisecond"))
     return ", ".join(parts)
 
+
 def get(url, params):
     while True:
         r = requests.get(url, headers=HEADERS, params=params, timeout=30)
@@ -57,8 +59,9 @@ def get(url, params):
 def scrape_repo(repo):
     out_path = OUT_DIR / f"{repo.replace('/', '__')}.jsonl"
     if out_path.exists():                       # resumable: skip finished repos
-        print(f"skip {repo}")
+        skipped_run.append(repo)
         return
+    flush_skipped()
     kept, page = [], 1
     while len(kept) < MAX_PER_REPO:
         r = get(f"https://api.github.com/repos/{repo}/issues",
@@ -91,6 +94,7 @@ def scrape_repo(repo):
 
 
 if __name__ == "__main__":
+    start = time.perf_counter()
     for line in Path("repos.txt").read_text().splitlines():
         line = line.split("#")[0].strip()
         if not line:
@@ -99,4 +103,7 @@ if __name__ == "__main__":
             scrape_repo(line)
         except requests.RequestException as e:
             status = e.response.status_code if e.response is not None else "network error"
-            print(f"{status}: Failed to read from {line}")
+            detail = e.response.text[:200] if e.response is not None else str(e)
+            print(f"{status}: Failed to read from {line} ({detail})")
+    flush_skipped()
+    print(f"Finished in {format_duration(time.perf_counter() - start)}")
