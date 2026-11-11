@@ -56,17 +56,19 @@ def get(url, params):
         return r
 
 
-def scrape_repo(repo):
+def fetch_repo(repo):
     out_path = OUT_DIR / f"{repo.replace('/', '__')}.jsonl"
     if out_path.exists():                       # resumable: skip finished repos
         skipped_run.append(repo)
         return
     flush_skipped()
-    kept, page = [], 1
-    while len(kept) < MAX_PER_REPO:
-        r = get(f"https://api.github.com/repos/{repo}/issues",
-                {"state": "all", "per_page": 100, "page": page,
-                 "sort": "created", "direction": "desc"})
+    kept = []
+    url = f"https://api.github.com/repos/{repo}/issues"
+    params = {"state": "all", "per_page": 100,
+              "sort": "created", "direction": "desc"}
+    while url and len(kept) < MAX_PER_REPO:
+        r = get(url, params)
+        params = None                           # next-page URLs already include the query
         items = r.json()
         if not items:
             break
@@ -86,7 +88,7 @@ def scrape_repo(repo):
                 "title": it["title"],
                 "body": it.get("body") or "",
             })
-        page += 1
+        url = r.links.get("next", {}).get("url")
     with open(out_path, "w") as f:
         for row in kept[:MAX_PER_REPO]:
             f.write(json.dumps(row) + "\n")
@@ -100,7 +102,7 @@ if __name__ == "__main__":
         if not line:
             continue
         try:
-            scrape_repo(line)
+            fetch_repo(line)
         except requests.RequestException as e:
             status = e.response.status_code if e.response is not None else "network error"
             detail = e.response.text[:200] if e.response is not None else str(e)
