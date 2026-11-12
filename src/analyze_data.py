@@ -2,8 +2,9 @@ import argparse, csv, json
 from collections import Counter, defaultdict
 from pathlib import Path
 
-RAW_DIR = Path("data/raw")
-OUT_DIR = Path("data/analysis")
+ROOT = Path(__file__).resolve().parent.parent
+RAW_DIR = ROOT / "data" / "raw"
+OUT_DIR = ROOT / "data" / "analysis"
 REQUIRED = ("repo", "number", "labels", "state", "created_at", "title", "body")
 TOP_LABELS = 40
 
@@ -95,7 +96,7 @@ def main():
             w.writerow([lab, c, len(label_repos[lab])])
     print(f"\nFull label table written to {out}")
 
-    repos_txt = Path("repos.txt")
+    repos_txt = ROOT / "configs" / "repos.txt"
     if repos_txt.exists() and not args.repos:
         wanted = [l.split("#")[0].strip() for l in repos_txt.read_text().splitlines()]
         have = {p.stem.replace("__", "/") for p in files}

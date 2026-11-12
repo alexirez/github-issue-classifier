@@ -4,7 +4,9 @@ from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
+ROOT = Path(__file__).resolve().parent.parent
+
+load_dotenv(ROOT / ".env")
 TOKEN = os.environ["GITHUB_TOKEN"]
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}",
@@ -12,7 +14,7 @@ HEADERS = {
     "X-GitHub-Api-Version": "2022-11-28",
 }
 MAX_PER_REPO = 600          # cap per repo so no single project dominates
-OUT_DIR = Path("data/raw")
+OUT_DIR = ROOT / "data" / "raw"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 skipped_run = []            # consecutive skipped repos, printed on one line
@@ -97,7 +99,7 @@ def fetch_repo(repo):
 
 if __name__ == "__main__":
     start = time.perf_counter()
-    for line in Path("repos.txt").read_text().splitlines():
+    for line in (ROOT / "configs" / "repos.txt").read_text().splitlines():
         line = line.split("#")[0].strip()
         if not line:
             continue
