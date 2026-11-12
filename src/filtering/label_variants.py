@@ -48,7 +48,7 @@ STRONG = {
         "optimisation", "optimizations",
     },
     "documentation": {"documentation", "docstring", "docstrings", "readme"},
-    "dependency": {"dependabot", "renovate"},
+    "dependency": set(),
     "maintenance": {
         "maintenance", "chore", "chores", "cleanup", "debt",
         "deprecate", "deprecated", "deprecation", "flaky", "flakiness",
@@ -71,7 +71,8 @@ PHRASES = {
     "security": set(),
     "dependency": {
         "dependency", "dependencies", "dependency issue", "dependency issues", "deps", "dep",
-        "dependency update", "dependency updates", "dependency management",
+        "dependency update", "dependency updates", "dependency management", "dependency upgrade", 
+        "dependency upgrades",
     },
     "maintenance": {
         "ci", "build", "build ci", "ci build", "infra", "infrastructure", "test", "tests",
@@ -85,8 +86,7 @@ DROP_WORDS = {"duplicate"}
 
 # Skip a label containing any of these: it describes workflow state, not issue type.
 WORKFLOW_WORDS = {
-    "needs", "need", "needed", "awaiting", "waiting", "blocked", "triage", "triaged",
-    "pending",
+    "needs", "need", "needed", "awaiting", "waiting", "blocked", "pending",
 }
 
 # Skip a label whose FIRST word is one of these: it names a location/area, not a type.
@@ -97,7 +97,8 @@ AREA_PREFIXES = {
 # Words that carry no meaning for matching.
 IGNORED = {
     # namespace words that prefix type labels ("type: bug", "kind/bug", "module: docs")
-    "type", "kind", "category", "module", "area", "issue", "issues", "label", "closed",
+    "type", "kind", "category", "module", "area", "issue", "issues", "label", "closed", 
+    "triage", "triaged",
     # pronouns, articles, prepositions, conjunctions
     "i", "me", "my", "we", "us", "our", "you", "your", "he", "him", "his", "she", "her",
     "it", "its", "they", "them", "their", "the", "an", "of", "to", "for", "in", "on",
