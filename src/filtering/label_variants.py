@@ -55,7 +55,7 @@ STRONG = {
     },
     "enhancement": {"enhancement", "enhancements", "improvement", "improvements"},
     "feature": {"wishlist"},
-    "misc": {"spam"},
+    "other": {"spam"},
 }
 
 PHRASES = {
@@ -78,7 +78,7 @@ PHRASES = {
         "ci", "build", "build ci", "ci build", "infra", "infrastructure", "test", "tests",
         "testing", "task", "tasks", "tech debt", "technical debt", "refactor", "refactoring",
     },
-    "misc": {"invalid", "off topic", "offtopic", "out of scope"},
+    "other": {"invalid", "off topic", "offtopic", "out of scope"},
 }
 
 # Issues with any of these words are dropped entirely (duplicates add nothing).
@@ -108,12 +108,12 @@ IGNORED = {
 NEGATIONS = {"not", "non", "no", "without"}
 ARTICLES = {"a", "an", "the"}
 
-# Applied AFTER mapping to reduce the class set, e.g. {"enhancement": "feature"}.
-MERGES = {}
+# Applied AFTER mapping to reduce the class set
+MERGES = {"enhancement": "feature"}
 
-# first match wins, rarer classes first so they keep examples.
+# first match wins, rarer classes first so they keep examples
 PRECEDENCE = [
-    "misc", "security", "dependency", "performance", "documentation", "question",
+    "other", "security", "dependency", "performance", "documentation", "question",
     "bug", "enhancement", "feature", "maintenance",
 ]
 
