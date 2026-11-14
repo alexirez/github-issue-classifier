@@ -1,6 +1,6 @@
 """Splits the filtered issues into train/val/test BY REPOSITORY.
 
-python src/testing/split_data.py [--seed 42] [--trials 5000] [--val-frac 0.15] [--test-frac 0.15]
+python src/training/split_data.py [--seed 42] [--trials 5000] [--val-frac 0.15] [--test-frac 0.15]
 
 Reads   data/processed/filtered_issues.jsonl
 Writes  data/processed/split_issues.jsonl      (each issue + its split)
