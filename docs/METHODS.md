@@ -45,9 +45,9 @@ Maintainer labels are noisy, so they're checked against a hand-labeled gold set 
 |---|---|
 | Fetch issues from GitHub | Done |
 | Analyze raw data and label counts | Done |
-| Label-mapping rules | Done, still being audited on the full fetch |
-| Filter, split by repo, and report how many issues survive each step | Next |
-| TF-IDF baseline | Next |
+| Label-mapping rules | Done |
+| Filter, split by repo, and report how many issues survive each step | Done |
+| TF-IDF baseline | Planned |
 | Embedding classifier | Planned |
 | Gold set | Planned |
 
@@ -61,4 +61,4 @@ Maintainer labels are noisy, so they're checked against a hand-labeled gold set 
 
 ## Reproducibility
 
-Configurations are stored in `configs/`. Since labels are cleaned programmatically, it's fully deterministic. The data however, may not be. As a result, results may vary during repeated trials.
+Configurations are stored in `configs/`. Since labels are cleaned programmatically, it's fully deterministic. The data however, may vary since it's fetched via GitHub's API on-demand. As a result, experiment results may vary slightly across attempts.
