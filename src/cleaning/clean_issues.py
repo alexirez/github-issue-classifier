@@ -31,7 +31,7 @@ OUT_DIR = ROOT / "data" / "analysis"
 # --- template detection settings (tune these after reading boilerplate_lines.csv) ---
 MIN_LINE_CHARS = 8    # shorter lines ("no", "yes", "---") are never treated as boilerplate
 MIN_REPEATS = 5       # a line must appear in at least this many issues of its repo...
-MIN_SHARE = 0.03      # ...and in at least this share of that repo's issues
+MIN_SHARE = 0.01      # ...and in at least this share of that repo's issues
 
 FENCE_RE = re.compile(r"(```|~~~).*?(?:\1|\Z)", re.DOTALL)   # an unclosed fence runs to the end
 URL_RE = re.compile(r"https?://[^\s<>)\]\"']+")
