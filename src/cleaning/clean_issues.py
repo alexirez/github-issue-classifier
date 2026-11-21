@@ -7,8 +7,8 @@ Writes  data/processed/cleaned_issues.jsonl   (every field of the input row, plu
                                                text_raw and text_clean)
 
 text_raw   = title, blank line, body (only line endings and outer whitespace tidied)
-text_clean = same, after: leading title tags removed ("[BUG] "), fenced code
-             blocks -> [CODE], URLs -> [URL]
+text_clean = same, after: leading title prefixes removed ("[BUG] ", "docs(router): ",
+             "Security: "), fenced code blocks -> [CODE], URLs -> [URL]
 An empty body gives just the title. Row order is the same as the input file.
 """
 
@@ -24,6 +24,14 @@ PROC_DIR = ROOT / "data" / "processed"
 FENCE_RE = re.compile(r"(```|~~~).*?(?:\1|\Z)", re.DOTALL)   # an unclosed fence runs to the end
 URL_RE = re.compile(r"https?://[^\s<>)\]\"']+")
 TITLE_TAG_RE = re.compile(r"^\s*(?:\[[^\]\n]{1,40}\]\s*[:\-–—]?\s*)+")
+# "type: ", "type(scope): ", "type/scope: " at the start of a title. The colon is required.
+PREFIX_RE = re.compile(
+    r"^\s*(?:feature[ _-]request|feat|feature|bugfix|bug|fix|documentation|docs?|"
+    r"style|refactor|performance|perf|tests?|testing|build|ci|chore|revert|security|"
+    r"question|enhancement|proposal|idea|deps|dependencies)"
+    r"(?:\s*\([^)\n]{1,40}\)|/[\w.\-]{1,30})?!?\s*:\s*",
+    re.IGNORECASE,
+)
 BLANKS_RE = re.compile(r"\n{3,}")
 
 
@@ -37,8 +45,9 @@ def join(title, body):
 
 
 def clean_title(title):
-    """Drop leading [TAG] prefixes. A title that is only a tag is left as it was."""
-    stripped = TITLE_TAG_RE.sub("", title, count=1).strip()
+    """Drop leading [TAG] and type(scope): prefixes. A title that is only a prefix is left as it was."""
+    stripped = TITLE_TAG_RE.sub("", title, count=1)
+    stripped = PREFIX_RE.sub("", stripped, count=1).strip()
     return stripped or title
 
 
@@ -73,7 +82,7 @@ def main():
 
             stats["issues"] += 1
             stats["empty body"] += not body
-            stats["title tag removed"] += clean_title(title) != title
+            stats["title prefix removed"] += clean_title(title) != title
             stats["code block replaced"] += bool(FENCE_RE.search(body))
             stats["URL replaced"] += bool(URL_RE.search(title + "\n" + body))
             stats["text changed by cleaning"] += raw != clean
